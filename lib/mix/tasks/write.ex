@@ -9,6 +9,10 @@ defmodule Mix.Tasks.WpConfig.Write do
 
   """
 
+  def main(args \\ []) do
+    run(args)
+  end
+
   def run(args) do
     with {_, [abs_path, db_name, db_user, db_password], _}
          when nil not in [abs_path, db_name, db_user, db_password] <-

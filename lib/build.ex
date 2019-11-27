@@ -1,4 +1,6 @@
 defmodule WpConfigWriter.Build do
+  alias WpConfigWriter.DataBase
+
   @moduledoc """
 
   define( 'DB_NAME', 'database_name_here' );
@@ -28,7 +30,17 @@ defmodule WpConfigWriter.Build do
     db_collate: ""
   ]
 
-  def new(%{db_name: _, db_user: _, db_password: _} = creds) do
+  def new(creds) do
+    with {:ok, :success} <- database(creds) do
+      wp_config(creds)
+    end
+  end
+
+  def database(%{db_user: user, db_password: password, db_name: app_database}) do
+    DataBase.Setup.setup_user(user, password, app_database)
+  end
+
+  def wp_config(creds) do
     %HTTPoison.Response{body: salt_body} = get_salt(System.get_env("MIX_ENV"))
     define_list = build_define_list(struct(__MODULE__, creds))
     compose(["<?php \n", [define_list, salt_body, base_required()]])

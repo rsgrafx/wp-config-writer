@@ -25,3 +25,5 @@ wp_config_writer-*.tar
 # Ignore executable
 wp_config_writer
 
+.env
+

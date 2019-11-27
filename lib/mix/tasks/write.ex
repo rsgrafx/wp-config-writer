@@ -10,7 +10,8 @@ defmodule Mix.Tasks.WpConfig.Write do
   """
 
   def run(args) do
-    with {_, [abs_path, db_name, db_user, db_password], _} =
+    with {_, [abs_path, db_name, db_user, db_password], _}
+         when nil not in [abs_path, db_name, db_user, db_password] <-
            OptionParser.parse(args, strict: [debug: :boolean]) do
       data =
         WpConfigWriter.Build.new(%{
@@ -19,9 +20,14 @@ defmodule Mix.Tasks.WpConfig.Write do
           db_password: db_password
         })
 
+      IO.puts("WP config file - setup")
       WpConfigWriter.build_file(abs_path, data)
+    else
+      _ ->
+        IO.puts("Please ensure you follow required usage: \n
+          e.g. Usage: mix wp_config.write /var/www/xyz orion-db orion-user password
+          ")
+        IO.puts("WP config file creating aborted")
     end
-
-    IO.puts("Start process for mix writer")
   end
 end

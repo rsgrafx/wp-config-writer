@@ -29,7 +29,7 @@ defmodule WpConfigWriter.Build do
   ]
 
   def new(%{db_name: _, db_user: _, db_password: _} = creds) do
-    %HTTPoison.Response{body: salt_body} = get_salt(Mix.env())
+    %HTTPoison.Response{body: salt_body} = get_salt(System.get_env("MIX_ENV"))
     define_list = build_define_list(struct(__MODULE__, creds))
     compose(["<?php \n", [define_list, salt_body, base_required()]])
   end
@@ -38,14 +38,7 @@ defmodule WpConfigWriter.Build do
     Enum.join(list, "\n")
   end
 
-  def get_salt(:prod) do
-    with {:ok, %{status_code: 200} = data} =
-           HTTPoison.get("https://api.wordpress.org/secret-key/1.1/salt/") do
-      data
-    end
-  end
-
-  def get_salt(_) do
+  def get_salt(nil) do
     %HTTPoison.Response{
       body:
         "define('AUTH_KEY', 'x:1;.{jFrK+a,O&FF[c|9kXy,H_,^5_e90n_]in|byDLkc%t0OC<$ |qarfo(+u|');\ndefine('SECURE_AUTH_KEY',  '`aP`/Y~aqJw-C|.C3.?*X09X!T?s<29^n5hx&>@V74Iv<{G7#3KX#v+:yK&u_20d');\ndefine('LOGGED_IN_KEY',    'K|~EKS!.SJ*>e}$&fStr?nq#R)02qYq7M;0sm5K8nccP-&0-,.kaw=75@j;hk(uM');\ndefine('NONCE_KEY',        'dsQw}{mTRt.|M3v<->b[>G)i(`3D~rU/!4FlTkfl@^-,JyFKSopm5z1`WIttBG#+');\ndefine('AUTH_SALT',        'E9*6Xx5d>&20Xf=~,I-0MKQ4w7Y~z~d+&oBI;F(H?xQL y#d|n=qZ5pJ.m(}Nr.I');\ndefine('SECURE_AUTH_SALT', 'yR HpeB5[{<Z79JZ>>DsqN~<>p>Ont8 ,Jk;1f[#[^x-lFH~-|A*dC +j2uwI.9c');\ndefine('LOGGED_IN_SALT',   '7!R+,=Q!&]nkT>6pVFwS0/}_PUz&&jGF{R#~<C/`-[R-nZW/!@ofEaWw2}GJi~{ ');\ndefine('NONCE_SALT',       '+Nx-KGUjm/{0]_jJ2 #n$+YVu+p`en)}TEIu?@N~.%5_7tpT+-+DVXc;(N l:H7T');\n",
@@ -68,6 +61,13 @@ defmodule WpConfigWriter.Build do
       request_url: "https://api.wordpress.org/secret-key/1.1/salt/",
       status_code: 200
     }
+  end
+
+  def get_salt("prod") do
+    with {:ok, %{status_code: 200} = data} =
+           HTTPoison.get("https://api.wordpress.org/secret-key/1.1/salt/") do
+      data
+    end
   end
 
   def base_required do

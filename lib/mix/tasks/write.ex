@@ -5,33 +5,43 @@ defmodule Mix.Tasks.WpConfig.Write do
   @moduledoc """
   This task accepts incoming params and writes a wp-config.php file.
 
-      Usage: mix wp_config.write /var/www/xyz orion-db orion-user" password
+      Usage: mix wp_config.write /var/www/xyz orion-db orion-user password
+
+      Usage: mix wp_config.write nginx /var/www/xyz foobar.com
 
   """
+  alias WpConfigWriter.Build
+  alias WpConfigWriter.Build.Nginx
 
   def main(args \\ []) do
-    run(args)
+    args
+    |> OptionParser.parse(strict: [debug: :boolean])
+    |> run()
   end
 
-  def run(args) do
-    with {_, [abs_path, db_name, db_user, db_password], _}
-         when nil not in [abs_path, db_name, db_user, db_password] <-
-           OptionParser.parse(args, strict: [debug: :boolean]) do
-      data =
-        WpConfigWriter.Build.new(%{
-          db_name: db_name,
-          db_user: db_user,
-          db_password: db_password
-        })
+  def run({_, ["nginx", abs_path, domain_name], _}) do
+    Nginx.parse_and_write(domain_name, abs_path)
+  end
 
-      IO.puts("WP config file - setup")
-      WpConfigWriter.build_file(abs_path, data)
-    else
-      _ ->
-        IO.puts("Please ensure you follow required usage: \n
-          e.g. Usage: mix wp_config.write /var/www/xyz orion-db orion-user password
+  def run({_, [abs_path, db_name, db_user, db_password], _})
+      when nil not in [abs_path, db_name, db_user, db_password] do
+    data =
+      Build.new(%{
+        db_name: db_name,
+        db_user: db_user,
+        db_password: db_password
+      })
+
+    IO.puts("WP config file - setup")
+    WpConfigWriter.build_file(abs_path, data)
+  end
+
+  def run(_) do
+    IO.puts("Please ensure you follow required usage: \n
+          e.g. Usage: mix wp_config.write /var/www/xyz orion-db orion-user password \n
+          e.g. Set Nginx \n
+          Usage: mix wp_config.write nginx /var/www/path fooobar.com
           ")
-        IO.puts("WP config file creating aborted")
-    end
+    IO.puts("WP config file creating aborted")
   end
 end

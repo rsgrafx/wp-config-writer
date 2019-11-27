@@ -22,3 +22,6 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 wp_config_writer-*.tar
 
+# Ignore executable
+wp_config_writer
+

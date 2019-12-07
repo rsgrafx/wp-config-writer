@@ -26,4 +26,4 @@ wp_config_writer-*.tar
 wp_config_writer
 
 .env
-
+*.conf

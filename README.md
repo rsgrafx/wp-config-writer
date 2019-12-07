@@ -25,7 +25,14 @@ Usage for generating Nginx Configs - The executable will generate an nginx confi
 - SUBDOMAIN - initial subdomain for testing.
 - **TODO**: setup a CLI to accept and fully qualified domain.
 
-`wp_config_writer BASE_DIR SUB_DOMAIN`
+`wp_config_writer nginx BASE_DIR SUB_DOMAIN`
+  
+  - This will generate an nginx conf file at the given destination `(BASE_DIR)`
+    -  Nginx directives `root_name` will be set to `(BASE_DIR)/wordpress` mapping to the integration with [WPBase](https://bitbucket.org/cowork-fiji/wp-base/src/master/)
+    -  Server_name will be set to `SUB_DOMAIN`.coworkfiji.com
+    -  See [Nginx Template conf](https://bitbucket.org/cowork-fiji/wp-config-writer/src/master/support/sample.conf.eex)
+    -  ** TODO ** Make this more extensible.
+
 
 ## _Requirements For Wordpress_
 

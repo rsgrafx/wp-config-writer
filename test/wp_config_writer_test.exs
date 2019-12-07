@@ -8,6 +8,6 @@ defmodule WpConfigWriterTest do
 
   test "writes-define function" do
     assert WpConfigWriter.write_define("DB_NAME", "my-db-name") ==
-             "define( 'DB_NAME', 'my-db-name' );"
+             "define( 'DB_NAME', 'my-db-name' ); \n"
   end
 end

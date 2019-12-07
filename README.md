@@ -17,6 +17,16 @@ e.g. usage.
   - NEW_USER - the database user.
   - DBPASS - the database password.
 
+## _wp_config_writer & Nginx_
+
+Usage for generating Nginx Configs - The executable will generate an nginx config with the following params.
+
+- BASE_DIR - where nginx will server your app from.
+- SUBDOMAIN - initial subdomain for testing.
+- **TODO**: setup a CLI to accept and fully qualified domain.
+
+`wp_config_writer BASE_DIR SUB_DOMAIN`
+
 ## _Requirements For Wordpress_
 
 [Proper Digial Ocean Instructions](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-ubuntu-18-04)

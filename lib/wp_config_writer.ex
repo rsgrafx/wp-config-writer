@@ -10,4 +10,8 @@ defmodule WpConfigWriter do
   def write_define(param, key) do
     WpConfigWriter.Build.define(param, key)
   end
+
+  def api_token do
+    Application.get_env(:wp_config_writer, :dns_provider)[:key]
+  end
 end

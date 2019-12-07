@@ -6,3 +6,5 @@ config :wp_config_writer, :myxql,
   hostname: System.get_env("MYSQL_HOST"),
   port: System.get_env("MYSQL_PORT") || 3306,
   ssl: false
+
+config :wp_config_writer, :dns_provider, key: System.get_env("DIGITAL_OCEAN_API")

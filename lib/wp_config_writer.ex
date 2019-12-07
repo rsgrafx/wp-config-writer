@@ -14,4 +14,6 @@ defmodule WpConfigWriter do
   def api_token do
     Application.get_env(:wp_config_writer, :dns_provider)[:key]
   end
+
+  defdelegate mask(string), to: Utils
 end

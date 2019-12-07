@@ -1,5 +1,5 @@
 defmodule Mix.Tasks.WpConfig.Write do
-  @shortdoc "Generates a wp-config.php file with given params"
+  @shortdoc "Generates a wp-config.php / Nginx conf file with given params"
   use Mix.Task
 
   @moduledoc """
@@ -12,6 +12,7 @@ defmodule Mix.Tasks.WpConfig.Write do
   """
   alias WpConfigWriter.Build
   alias WpConfigWriter.Build.Nginx
+  alias WpConfigWriter.Manage.Domain
 
   def main(args \\ []) do
     args
@@ -19,8 +20,15 @@ defmodule Mix.Tasks.WpConfig.Write do
     |> run()
   end
 
+  def run({_, ["configs"], _}) do
+    WpConfigWriter.api_token()
+    |> WpConfigWriter.mask()
+    |> IO.puts()
+  end
+
   def run({_, ["nginx", abs_path, domain_name], _}) do
     Nginx.parse_and_write(domain_name, abs_path)
+    # Domain.ensure_()
   end
 
   def run({_, [abs_path, db_name, db_user, db_password], _})
@@ -39,7 +47,7 @@ defmodule Mix.Tasks.WpConfig.Write do
   def run(_) do
     IO.puts("Please ensure you follow required usage: \n
           e.g. Usage: mix wp_config.write /var/www/xyz orion-db orion-user password \n
-          e.g. Set Nginx \n
+          e.g. Setting up Nginx configs \n
           Usage: mix wp_config.write nginx /var/www/path fooobar.com
           ")
     IO.puts("WP config file creating aborted")

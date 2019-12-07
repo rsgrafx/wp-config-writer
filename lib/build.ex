@@ -76,7 +76,7 @@ defmodule WpConfigWriter.Build do
   end
 
   def get_salt("prod") do
-    with {:ok, %{status_code: 200} = data} =
+    with {:ok, %{status_code: response_code} = data} when response_code in 200..300 <-
            HTTPoison.get("https://api.wordpress.org/secret-key/1.1/salt/") do
       data
     end

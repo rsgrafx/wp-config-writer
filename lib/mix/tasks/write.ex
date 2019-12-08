@@ -20,15 +20,20 @@ defmodule Mix.Tasks.WpConfig.Write do
     |> run()
   end
 
-  def run({_, ["configs"], _}) do
+  def run({_, ["configs"], [{"--check", _}]}) do
+    IO.puts(
+      "An :error - means - either not needed set to '' \n* Double check if this item is needed."
+    )
+
     WpConfigWriter.api_token()
     |> WpConfigWriter.mask()
-    |> IO.puts()
+    |> IO.inspect(label: "Digital Ocean API key: \n")
+
+    IO.inspect(WpConfigWriter.database_configs(), label: "Database configs: \n")
   end
 
   def run({_, ["nginx", abs_path, domain_name], _}) do
     Nginx.parse_and_write(domain_name, abs_path)
-    # Domain.ensure_()
   end
 
   def run({_, [abs_path, db_name, db_user, db_password], _})

@@ -15,5 +15,13 @@ defmodule WpConfigWriter do
     Application.get_env(:wp_config_writer, :dns_provider)[:key]
   end
 
-  defdelegate mask(string), to: Utils
+  def database_configs do
+    configs = Application.get_env(:wp_config_writer, :myxql)
+
+    Enum.map(configs, fn {k, v} ->
+      {k, mask(v)}
+    end)
+  end
+
+  defdelegate mask(string), to: WpConfigWriter.Utils
 end

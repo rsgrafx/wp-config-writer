@@ -15,6 +15,10 @@ defmodule WpConfigWriter do
     Application.get_env(:wp_config_writer, :dns_provider)[:key]
   end
 
+  def ip_address do
+    Application.get_env(:wp_config_writer, :dns_provider)[:ip_address]
+  end
+
   def database_configs do
     configs = Application.get_env(:wp_config_writer, :myxql)
 

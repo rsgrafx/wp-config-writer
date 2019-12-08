@@ -33,7 +33,7 @@ defmodule Mix.Tasks.WpConfig.Write do
   end
 
   def run({_, ["nginx", abs_path, domain_name], _}) do
-    Nginx.parse_and_write(domain_name, abs_path)
+    Nginx.setup(domain_name, abs_path)
   end
 
   def run({_, [abs_path, db_name, db_user, db_password], _})

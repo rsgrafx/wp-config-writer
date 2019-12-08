@@ -3,9 +3,18 @@ defmodule WpConfigWriter.Build.Nginx do
   Use regular expressions to parse sample and inject params to
   config file.
   """
+  alias WpConfigWriter.Manage.Domain
 
   def load_sample() do
     Path.expand("../support", __DIR__) <> "/sample.conf.eex"
+  end
+
+  def setup(domain_name, abs_name) do
+    target_ip = WpConfigWriter.ip_address()
+
+    with {:ok, _} <- Domain.modify_dns_record(domain_name, target_ip) do
+      parse_and_write(domain_name, abs_name)
+    end
   end
 
   def parse_and_write(domain_name, base_path) do

@@ -1,4 +1,8 @@
 defmodule WpConfigWriter.Utils do
+  defmodule Guards do
+    defguard is_valid(input) when input not in [nil, ""]
+  end
+
   def mask(string) when is_binary(string) do
     do_mask(string, "")
   end

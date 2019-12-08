@@ -3,21 +3,36 @@ defmodule WpConfigWriter.Manage.Domain do
   House logic that makes http calls to Digital Oceans
   API to add CNAME.
   """
+  defmodule Error do
+    defexception [:message]
+  end
+
+  import WpConfigWriter.Utils.Guards
 
   @type dns_record :: String.t()
   @type ip_address :: String.t()
-  @type error_message :: {:ok, String.t()}
-  @type response_map :: map()
+  @type error_message :: {:error, String.t()}
+  @type response_map :: {:ok, map()}
 
   @base "https://api.digitalocean.com/v2/domains"
   @current_app_domain_scope "coworkfiji.com"
 
   @doc "Checks if subdomain already exists on DNS host and sets it."
   @spec modify_dns_record(dns_record, ip_address) :: response_map | error_message
-  def modify_dns_record(domain, ip_address) do
+
+  def modify_dns_record(domain, ip_address)
+      when is_valid(domain) and is_valid(ip_address) do
     with {:ok, domain} <- check?(domain) do
       execute_dns_changes(domain, ip_address)
     end
+  end
+
+  def modify_dns_record(_, _) do
+    require Logger
+    Logger.error("#{__MODULE__} modify_dns_record/2 please verify inputs")
+
+    raise Error,
+      message: "#{__MODULE__} modify_dns_record/2 please verify inputs"
   end
 
   def get_all_records do
@@ -47,12 +62,18 @@ defmodule WpConfigWriter.Manage.Domain do
 
   defp execute_dns_changes(domain, ip_address) do
     params = params(domain, ip_address)
-
     json_data = Jason.encode!(params)
+    result = HTTPoison.post(domain_records_endpoint(), json_data)
 
-    with {:ok, %{body: data, status_code: 201}} <-
-           HTTPoison.post(domain_records_endpoint(), json_data) do
-      Jason.decode(data)
+    case result do
+      {:ok, %{body: data, status_code: status_code}} when status_code in 200..300 ->
+        Jason.decode(data)
+
+      {:ok, _http_response} ->
+        {:error, "Unable to fulfill request."}
+
+      _ ->
+        {:error, "Unable to fulfill request. "}
     end
   end
 

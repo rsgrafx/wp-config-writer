@@ -1,4 +1,4 @@
-defmodule WpConfigWrite.CLI do
+defmodule WpConfigWriter.CLI do
   @moduledoc """
     House CLI logic. Placeholder module.
   """

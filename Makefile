@@ -1,12 +1,17 @@
 pull:
-	git pull origin master && mix do deps.get, compile
+	git pull origin master 
 
-compile-build:
-	mix deps.get && mix compile --force && mix do escript.build, escript.install
+compile:
+	mix deps.get && mix compile --force
 
-build-script:
+script:
 	mix do escript.build, escript.install
+
+rebuild-dev:
+	$(MAKE) compile
+	$(MAKE) script
 
 rebuild:
 	$(MAKE) pull
-	$(MAKE) build-script
+	$(MAKE) compile
+	$(MAKE) script

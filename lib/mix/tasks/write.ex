@@ -29,6 +29,10 @@ defmodule Mix.Tasks.WpConfig.Write do
     |> WpConfigWriter.mask()
     |> IO.inspect(label: "Digital Ocean API key: \n")
 
+    WpConfigWriter.ip_address()
+    |> WpConfigWriter.mask()
+    |> IO.inspect(label: "Targe DNS IP Address key: \n")
+
     IO.inspect(WpConfigWriter.database_configs(), label: "Database configs: \n")
   end
 
@@ -55,6 +59,8 @@ defmodule Mix.Tasks.WpConfig.Write do
           e.g. Setting up Nginx configs \n
           Usage: mix wp_config.write nginx /var/www/path fooobar.com
           ")
+    IO.puts("check all configs set \n
+    > `wp_config_writer configs --check\n")
     IO.puts("WP config file creating aborted")
   end
 end

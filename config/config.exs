@@ -10,4 +10,6 @@ config :wp_config_writer, :myxql,
 config :wp_config_writer,
        :dns_provider,
        key: System.get_env("DIGITAL_OCEAN_API"),
-       ip_address: System.get_env("DNS_IP")
+       ip_address: System.get_env("DNS_IP"),
+       current_domain: System.get_env("DOMAIN_SCOPE", "coworkfiji.com"),
+       api: "https://api.digitalocean.com/v2/domains"

@@ -14,9 +14,6 @@ defmodule WpConfigWriter.Manage.Domain do
   @type error_message :: {:error, String.t()}
   @type response_map :: {:ok, map()}
 
-  @base "https://api.digitalocean.com/v2/domains"
-  @current_app_domain_scope "coworkfiji.com"
-
   @doc "Checks if subdomain already exists on DNS host and sets it."
   @spec modify_dns_record(dns_record, ip_address) :: response_map | error_message
 
@@ -92,7 +89,9 @@ defmodule WpConfigWriter.Manage.Domain do
   end
 
   defp domain_records_endpoint do
-    @base <> "/" <> @current_app_domain_scope <> "/records"
+    domain = WpConfigWriter.current_base_domain()
+    api_endpoint = WpConfigWriter.current_base_domain()
+    api_endpoint <> "/" <> domain <> "/records"
   end
 
   defp auth_headers do

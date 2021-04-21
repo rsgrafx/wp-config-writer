@@ -95,6 +95,10 @@ defmodule WpConfigWriter.Build do
       define( 'ABSPATH', dirname( __FILE__ ) . '/' );
     }
 
+    @ini_set( 'upload_max_size' , '22M' );
+    @ini_set( 'post_max_size', '13M');
+    @ini_set( 'memory_limit', '15M' );
+
     /** Sets up WordPress vars and included files. */
     require_once( ABSPATH . 'wp-settings.php' );
     """
